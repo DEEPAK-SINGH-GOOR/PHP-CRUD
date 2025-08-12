@@ -1,0 +1,39 @@
+1) Tailwind Css setup Command
+=> npm install tailwindcss @tailwindcss/vite
+=> add import tailwindcss => tailwindcss(), from "@tailwindcss/vite"; in vite.config.js 
+=> Import in css @import "tailwindcss";
+
+2) Tailwind CSS Property
+=>  Example :   <h1 class="text-red-400">Hello world!</h1>
+=>  display => flex (display-flex) 
+=>  justify-center (justify-center) 
+=>  item-center (items-center) 
+=>  text-center (text-center)
+=>  border-2 (border-width) 
+=>  rounded-xl - 10px  (border-radius) 
+=>  font-sans (font-family) 
+=>  text-lg (font-size) 
+=>  font-red(text-red-400)
+=>  w-96 (width => w-3/5 (60%))
+=>  boxShadow (shadow-2xl)
+
+=>  p-0 (padding) 
+=>  pt-0 (padding top)
+=>  pr-0 (padding right)
+=>  pb-0 (padding bottom)
+=>  pl-0 (padding left)
+
+=>  m-0: 0;(margin)  
+=>  mt-6 (margin top )
+=>  mb-5 (margin bottom)
+=>  ml-0 (margin left)
+=>  mr-5 (margin right)
+ 
+=>  bg-white (backGround-Black) 
+=>  p-6 (padding 24)
+=>  h-5 (height 20px)
+=>  w-10 (width 40px)
+=>  providing Custom width (w-[490px])
+=>  border-black (border-color)
+=>  bg-color (bg-red-600)
+=>  text-color (text-red-400)
