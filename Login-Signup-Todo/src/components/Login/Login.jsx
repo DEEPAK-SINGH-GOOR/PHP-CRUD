@@ -34,11 +34,11 @@ const Login = () => {
     e.preventDefault();
     if (!validation()) return;
 
-    // ✅ Dispatch login action
+    //  Dispatch login action
     dispatch(login({ email, password }));
   };
 
-  // ✅ Watch Redux state and redirect after successful login
+  // Watch Redux state and redirect after successful login
   useEffect(() => {
     if (currentUser) {
       console.log("Login successful", currentUser);
