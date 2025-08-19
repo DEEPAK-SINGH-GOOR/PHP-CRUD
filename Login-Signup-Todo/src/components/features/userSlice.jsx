@@ -40,7 +40,7 @@ const userSlice = createSlice({
     },
 
     logout: (state) => {
-      console.log("🔹 Logout action called");
+      console.log("Logout action called");
       state.currentUser = null;
       console.log(" User logged out. Current user is now:", state.currentUser);
     },
