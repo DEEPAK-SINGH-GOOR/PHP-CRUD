@@ -52,10 +52,10 @@ const Signup = () => {
     console.log("Before Update (current user.language):", user.language);
   
     if (checked) {
-      console.log(`✅ Adding "${value}" to array`);
+      console.log(`dding "${value}" to array`);
       updated.push(value);
     } else {
-      console.log(`❌ Removing "${value}" from array`);
+      console.log(`Removing "${value}" from array`);
       updated = updated.filter((lang) => lang !== value);
     }
   
