@@ -1,111 +1,304 @@
-<!doctype html>
-<html lang="en">
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { combineReducers } from "redux";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite + React</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
-</head>
+// ---------------- ACTION ----------------
+export const addUser = (user) => ({
+  type: "ADD_USER",
+  payload: user,
+});
 
-<body>
-  <!-- npm install tailwindcss @tailwindcss/vite -->
-  <div id="root"></div>
-  <!--                  
-                        // The connect is use to connects a React component to a Redux store.
-                        // Payload :  Among the key components of actions is the payload, which carries data to be processed by reducers
+export const deleteUser = (id) => ({
+  type: "DELETE_USER",
+  payload: id,
+});
 
-                        1) What is Redux?
-                        => Redux is a state management library used to store and manage the entire application's data in one place.
-                        => It does not belong to any single component's state; it is global.
-                        => Alternative to Context API for larger applications.
-                        => Stores whole application data and follows unidirectional data flow.
-                    
-                        2) Four Main Pillars:
-                        => Action, Reducer, Store, View
-                           - View: React components (buttons, images, inputs, checkboxes, etc.).
-                           - Action: Collects data from View & API, then sends to Reducer.
-                           - Reducer: Processes action data and returns new state to Store.
-                           - Store: Manages the whole application state and provides it to Views.
-                        Note: One application has only one Store.
-                        Flow: View → Action → Reducer → Store → View
-                        
-                        3) How to Install Redux:
-                        => npm create vite@latest my-app
-                        => npm install react-redux
-                        => npm install @reduxjs/toolkit
-                        => npm run dev
-                    
-                        4) What is Props?
-                        => Props are used to send data from one component to another.
-                        => Helps communicate between components.
-                        Note: With Redux, components often access data directly from the Store instead of passing via props.
-                    
-                        5) What is Action?
-                        => An object that sends data from a React component (View) or API to the Redux Store.
-                    
-                        6) What is Dispatch?
-                        => A function in Redux used to send an action to the Store so Reducers can update the state.
-                    
-                        7) What is Reducer?
-                        => A pure function that takes the current state and an action, and returns a new state.
-                        
-                        8) What is Store?
-                        => The centralized container that holds the entire application’s state.
-                        => Created using configureStore() in Redux Toolkit.
-                        => One store per application.
-                    
-                        9) What is View?
-                        => The UI layer (React components) that displays data from the Store and sends actions to Redux.
-    
-                        10) What is node-sass
-                        => It enables a developer to create code in another language and translate it into CSS
+// ---------------- REDUCER ----------------
+const initialState = {
+  users: [],
+};
 
-                        11) What is uuid 
-                        => A UUID, or Universally Unique Identifier, is a 128-bit number used to uniquely identify information in computer systems.
-                        It is typically displayed as a 36-character string, divided into five sections
+function userReducer(state = initialState, action) {
+  switch (action.type) {
+    case "ADD_USER":
+      return {
+        ...state,
+        users: [...state.users, action.payload],
+      };
+    case "DELETE_USER":
+      return {
+        ...state,
+        users: state.users.filter((u) => u.id !== action.payload),
+      };
+    default:
+      return state;
+  }
+}
 
-                        Example : 550e8400-e29b-41d4-a716-446655440000
+// ---------------- STORE ----------------
+const persistConfig = {
+  key: "root",
+  storage,
+};
 
-                        12) What is combineReducers
-                        => The combineReducers helper function turns an object whose values are different "slice reducer" functions into a single
-                        combined reducer function you can pass to Redux
+const rootReducer = combineReducers({
+  users: userReducer,
+});
 
-                        Example : 
-                        export default combineReducers({
-                        todos,
-                        counter 
-                        })
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-                        13) What is createStore
-                        => Creates a Redux store that holds the complete state tree of your app
-                        
-                        14) What is useSelector
-                        => that allows functional React components to extract and use specific pieces of data from the Redux store
+export const store = configureStore({
+  reducer: persistedReducer,
+});
 
-                        15) What is useDispatch
-                        => which allows functional components to dispatch actions to the Redux store.
-                        
-                        16) What is Provider 
-                        => In Redux Toolkit, the Provider is a component from the react-redux library that connects your Redux store to your React
-                           application. It makes the Redux store available to all components within its scope, typically by wrapping the root
-                           component of your application.
+export const persistor = persistStore(store);
 
-                        NOTE : REDUX - STEP 
-                               1) crudAction.jsx  
-                               2) App.jsx
-                               3) crudReducer.jsx
-                               4) index.js
-                               5) store.js
-                               6) main.jsx
+// ---------------- COMPONENT ----------------
+const Registration = () => {
+  const dispatch = useDispatch();
 
-                        ) 
-                        => Redux Persist is a library used in with Redux to persist Redux store's state across page
-                        reloads or application restart.
-                        -->
-  <script type="module" src="/src/main.jsx"></script>
-</body>
+  let User = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    dob: "",
+    contact: "",
+    country: "",
+    gender: "",
+    language: [],
+  };
 
-</html>
+  const [user, setUser] = useState(User);
+  const [error, setError] = useState({});
+  const users = useSelector((state) => state.users.users); // ✅ FIXED SELECTOR
+
+  const validate = () => {
+    let newError = {};
+    if (!user.firstName) {
+      newError.firstName = "First name required";
+    } else if (!/^[A-Za-z]+$/.test(user.firstName)) {
+      newError.firstName = "Only alphabets allowed";
+    }
+    if (!user.lastName) {
+      newError.lastName = "Last name required";
+    } else if (!/^[A-Za-z]+$/.test(user.lastName)) {
+      newError.lastName = "Only alphabets allowed";
+    }
+    if (!user.email) {
+      newError.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(user.email)) {
+      newError.email = "Invalid email format";
+    }
+    if (!user.dob) {
+      newError.dob = "Date of birth required";
+    }
+    if (!user.contact) {
+      newError.contact = "Contact number required";
+    } else if (!/^[0-9]{10}$/.test(user.contact)) {
+      newError.contact = "Contact must be 10 digits";
+    }
+    if (!user.country) {
+      newError.country = "Country is required";
+    }
+    if (!user.gender) {
+      newError.gender = "Gender is required";
+    }
+    if (user.language.length === 0) {
+      newError.language = "At least one language required";
+    }
+    setError(newError);
+    return Object.keys(newError).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value, checked } = e.target;
+
+    if (name === "language") {
+      let updated = [...user.language];
+      if (checked) {
+        updated.push(value);
+      } else {
+        updated = updated.filter((lang) => lang !== value);
+      }
+      setUser({ ...user, language: updated });
+    } else {
+      setUser({ ...user, [name]: value });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+    dispatch(addUser({ ...user, id: Date.now() }));
+    setUser(User);
+  };
+
+  const handleDelete = (id) => {
+    dispatch(deleteUser(id));
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Registration Form</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          name="firstName"
+          value={user.firstName}
+          onChange={handleChange}
+          placeholder="First Name"
+          className="border p-2 w-full"
+        />
+        <p className="text-red-500">{error.firstName}</p>
+
+        <input
+          name="lastName"
+          value={user.lastName}
+          onChange={handleChange}
+          placeholder="Last Name"
+          className="border p-2 w-full"
+        />
+        <p className="text-red-500">{error.lastName}</p>
+
+        <input
+          name="email"
+          type="email"
+          value={user.email}
+          onChange={handleChange}
+          placeholder="Email"
+          className="border p-2 w-full"
+        />
+        <p className="text-red-500">{error.email}</p>
+
+        <input
+          name="dob"
+          type="date"
+          value={user.dob}
+          onChange={handleChange}
+          className="border p-2 w-full"
+        />
+        <p className="text-red-500">{error.dob}</p>
+
+        <input
+          name="contact"
+          value={user.contact}
+          onChange={handleChange}
+          placeholder="Contact"
+          className="border p-2 w-full"
+        />
+        <p className="text-red-500">{error.contact}</p>
+
+        <select
+          name="country"
+          value={user.country}
+          onChange={handleChange}
+          className="border p-2 w-full"
+        >
+          <option value="">Select Country</option>
+          <option value="usa">USA</option>
+          <option value="india">India</option>
+          <option value="china">China</option>
+        </select>
+        <p className="text-red-500">{error.country}</p>
+
+        <select
+          name="gender"
+          value={user.gender}
+          onChange={handleChange}
+          className="border p-2 w-full"
+        >
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <p className="text-red-500">{error.gender}</p>
+
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="language"
+              value="English"
+              checked={user.language.includes("English")}
+              onChange={handleChange}
+            />
+            English
+          </label>
+          <label className="ml-4">
+            <input
+              type="checkbox"
+              name="language"
+              value="Hindi"
+              checked={user.language.includes("Hindi")}
+              onChange={handleChange}
+            />
+            Hindi
+          </label>
+          <label className="ml-4">
+            <input
+              type="checkbox"
+              name="language"
+              value="Gujarati"
+              checked={user.language.includes("Gujarati")}
+              onChange={handleChange}
+            />
+            Gujarati
+          </label>
+        </div>
+        <p className="text-red-500">{error.language}</p>
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white p-2 rounded w-full"
+        >
+          Submit
+        </button>
+      </form>
+
+      <h2 className="text-xl font-bold mt-6">Users List</h2>
+      <table className="border w-full mt-4">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="p-2 border">First Name</th>
+            <th className="p-2 border">Last Name</th>
+            <th className="p-2 border">Email</th>
+            <th className="p-2 border">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.length > 0 &&
+            users.map((data) => (
+              <tr key={data.id}>
+                <td className="p-2 border">{data.firstName}</td>
+                <td className="p-2 border">{data.lastName}</td>
+                <td className="p-2 border">{data.email}</td>
+                <td className="p-2 border">
+                  <button
+                    onClick={() => handleDelete(data.id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+// ---------------- ROOT APP ----------------
+export default function App() {
+  return (
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <Registration />
+      </PersistGate>
+    </Provider>
+  );
+}
