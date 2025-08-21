@@ -282,3 +282,291 @@ const Logout = () => {
 };
 
 export default Logout;
+
+//////////
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, deleteUser, editUser } from "../action/userAction";
+import Button from "../Elements/Button";
+import { Input, InputSelectSignup } from "../Elements/Input";
+import Select from "../Elements/Select";
+import { Label, LabelSelect } from "../Elements/label";
+import { TdTable, ThTable } from "../Elements/THtable";
+import { countryOptions, genderOptions } from "../Data/ValueLabel";
+import { Sun, Moon } from "lucide-react";
+import "./Home.css";
+
+const Logout = () => {
+  const dispatch = useDispatch();
+  const User = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    dob: "",
+    contact: "",
+    country: "",
+    gender: "",
+    language: [],
+  };
+
+  const [user, setUser] = useState(User);
+  const users = useSelector((state) => state.users.users);
+
+  const [edit, setEdit] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const inputHandleLanguage = (e) => {
+    const { name, value, checked } = e.target;
+    if (name === "language") {
+      const updated = checked
+        ? [...user.language, value]
+        : user.language.filter((lang) => lang !== value);
+      setUser({ ...user, [name]: updated });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (edit) {
+      dispatch(editUser({ ...user }));
+      setEdit(null);
+    } else {
+      dispatch(addUser({ ...user, id: Date.now() }));
+    }
+    setUser(User);
+  };
+
+  const handleDelete = (id) => {
+    dispatch(deleteUser(id));
+  };
+
+  const handleEdit = (data) => {
+    setUser(data);
+    setEdit(data.id);
+  };
+
+  return (
+    <div className={`p-6 ${isDarkMode ? "dark" : ""}`}>
+      {/* Toggle Button */}
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors duration-300 
+            bg-gray-200 text-black hover:bg-gray-300 
+            dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600"
+        >
+          {isDarkMode ? (
+            <>
+              <Moon className="h-5 w-5 text-gray-200" />
+              <span>Dark Mode</span>
+            </>
+          ) : (
+            <>
+              <Sun className="h-5 w-5 text-yellow-400" />
+              <span>Light Mode</span>
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Registration Form */}
+      <div
+        className={`max-w-md w-full mx-auto border rounded-2xl p-8 ${
+          isDarkMode
+            ? "bg-gray-800 border-gray-700 text-white"
+            : "bg-white border-gray-300 text-black"
+        }`}
+      >
+        <div className="text-center mb-4">
+          <h2 className="text-3xl font-bold">Registration Form</h2>
+          <hr />
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-6">
+            <Label label="First Name" />
+            <Input
+              name="firstName"
+              type="text"
+              value={user.firstName}
+              onChange={handleChange}
+              placeholder="Enter First Name"
+            />
+          </div>
+          <br />
+          <div className="space-y-6">
+            <Label label="Last Name" />
+            <Input
+              name="lastName"
+              type="text"
+              value={user.lastName}
+              onChange={handleChange}
+              placeholder="Enter Last Name"
+            />
+          </div>
+          <br />
+          <div className="space-y-6">
+            <Label label="Email" />
+            <Input
+              name="email"
+              type="email"
+              value={user.email}
+              onChange={handleChange}
+              placeholder="Enter Email"
+            />
+          </div>
+          <br />
+          <div className="sm:flex gap-5">
+            <div className="sm:w-[180px]">
+              <Label label="Date Of Birth" />
+              <Input
+                name="dob"
+                type="date"
+                value={user.dob}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="sm:w-[180px]">
+              <Label label="Contact No." />
+              <Input
+                name="contact"
+                type="number"
+                value={user.contact}
+                onChange={handleChange}
+                placeholder="Enter Contact"
+              />
+            </div>
+          </div>
+          <br />
+          <div className="flex justify-center gap-6">
+            <div className="w-[180px]">
+              <LabelSelect label="Country" />
+              <Select
+                name="country"
+                value={user.country}
+                onChange={handleChange}
+                options={countryOptions}
+              />
+            </div>
+            <div className="w-[180px]">
+              <LabelSelect label="Gender" />
+              <Select
+                name="gender"
+                value={user.gender}
+                onChange={handleChange}
+                options={genderOptions}
+              />
+            </div>
+          </div>
+          <br />
+          <div className="items-center">
+            <label className="text-sm font-medium block w-full">
+              Select Language:
+            </label>
+            <InputSelectSignup
+              name="language"
+              value="English"
+              onChange={inputHandleLanguage}
+              checked={user.language.includes("English")}
+            />
+            <span>English</span>
+            <InputSelectSignup
+              name="language"
+              value="Hindi"
+              onChange={inputHandleLanguage}
+              checked={user.language.includes("Hindi")}
+            />
+            <span>Hindi</span>
+            <InputSelectSignup
+              name="language"
+              value="Gujarati"
+              onChange={inputHandleLanguage}
+              checked={user.language.includes("Gujarati")}
+            />
+            <span>Gujarati</span>
+          </div>
+
+          <div className="mt-3">
+            <button
+              type="submit"
+              className="w-full py-3 px-4 text-sm tracking-wider font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Table */}
+      <br />
+      <div
+        className={`relative overflow-x-auto shadow-md sm:rounded-lg ${
+          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+        }`}
+      >
+        <table className="w-full text-sm text-left rtl:text-right">
+          <thead
+            className={`text-xs uppercase ${
+              isDarkMode
+                ? "bg-gray-700 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            <tr className="border-b">
+              <ThTable label="First name" />
+              <ThTable label="Last name" />
+              <ThTable label="Email" />
+              <ThTable label="Date Of Birth" />
+              <ThTable label="Contact" />
+              <ThTable label="Country" />
+              <ThTable label="Gender" />
+              <ThTable label="Language" />
+              <ThTable label="Action" />
+            </tr>
+          </thead>
+
+          <tbody>
+            {users.map((data) => (
+              <tr
+                key={data.id}
+                className={`border-b ${
+                  isDarkMode
+                    ? "bg-gray-800 hover:bg-gray-700 text-white border-gray-700"
+                    : "bg-white hover:bg-gray-50 text-black border-gray-200"
+                }`}
+              >
+                <TdTable label={data.firstName} />
+                <TdTable label={data.lastName} />
+                <TdTable label={data.email} />
+                <TdTable label={data.dob} />
+                <TdTable label={data.contact} />
+                <TdTable label={data.country} />
+                <TdTable label={data.gender} />
+                <TdTable label={data.language.join(" , ")} />
+                <td className="px-3 py-2 flex gap-2">
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md"
+                    label="Delete"
+                    onClick={() => handleDelete(data.id)}
+                  />
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md"
+                    label="Edit"
+                    onClick={() => handleEdit(data)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default Logout;
