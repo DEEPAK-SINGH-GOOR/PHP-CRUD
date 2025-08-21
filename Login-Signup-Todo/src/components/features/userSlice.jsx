@@ -1,5 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Action creators
+export const signupAction = (user) => ({
+  type: "user/signup",
+  payload: user,
+});
+
+export const loginAction = (credentials) => ({
+  type: "user/login",
+  payload: credentials,
+});
+
+export const logoutAction = () => ({
+  type: "user/logout",
+});
+
+// Reducer slice
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -15,24 +31,21 @@ const userSlice = createSlice({
 
     login: (state, action) => {
       console.log("login action:", action.payload);
-
       const { email, password } = action.payload;
-      // console.log(email, "EMAIL");
-      // console.log(password, "PASSWORD");
 
       const user = state.users.find(
         (e) => e.email === email && e.password === password
       );
+
       if (user) {
         state.currentUser = user;
         console.log("login successful");
       } else {
-        alert("IInvalid Email & Password");
+        alert("Invalid Email & Password");
       }
     },
 
     logout: (state) => {
-      // console.log("Logout");
       state.currentUser = null;
     },
   },
