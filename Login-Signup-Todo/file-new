@@ -1,3 +1,43 @@
+// ✅ vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+})
+
+/* ================================
+   ✅ App.jsx
+   ================================ */
+import React, { useState } from "react";
+import { IoMoon, IoSunny } from "react-icons/io5";
+
+function App() {
+  const [dark, setDark] = useState(false);
+
+  const darkModeHandler = () => {
+    setDark(!dark);
+    document.body.classList.toggle("dark");
+  };
+
+  return (
+    <div className="bg-yellow-100 dark:bg-blue-900 min-h-screen flex items-center justify-center">
+      <button
+        onClick={darkModeHandler}
+        className="p-3 rounded-full bg-gray-200 dark:bg-gray-700 text-xl"
+      >
+        {dark ? <IoSunny /> : <IoMoon />}
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
 
 const Language =
   !filters.language ||
@@ -597,5 +637,6 @@ const Logout = () => {
 };
 
 export default Logout;
+
 
 
