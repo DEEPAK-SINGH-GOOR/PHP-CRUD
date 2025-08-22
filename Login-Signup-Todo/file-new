@@ -570,4 +570,27 @@ const Logout = () => {
 };
 
 export default Logout;
+//////////
+import { useState } from "react";
+
+const Logout = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  return (
+    <div
+      className={`min-h-screen flex items-center justify-center ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+      }`}
+    >
+      <button
+        onClick={() => setIsDarkMode(!isDarkMode)}
+        className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700"
+      >
+        {isDarkMode ? "Light Mode" : "Dark Mode"}
+      </button>
+    </div>
+  );
+};
+
+export default Logout;
 
