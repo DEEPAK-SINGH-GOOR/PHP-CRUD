@@ -1,111 +1,592 @@
-<!doctype html>
-<html lang="en">
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../action/LoginSignAction";
+import { addUser, deleteUser, editUser } from "../action/userAction";
+import Button from "../Elements/Button";
+import { Input, InputSelectSignup } from "../Elements/Input";
+import Span from "../Elements/Span";
+import Select from "../Elements/Select";
+import { Label, LabelSelect } from "../Elements/label";
+import { TdTable, ThTable } from "../Elements/THtable";
+import { faMoon } from "@fortawesome/free-regular-svg-icons";
+import React from "react";
+import { IoMoon } from "react-icons/io5";
+import { IoSunny } from "react-icons/io5";
+import { IconContext } from "react-icons";
+import { Link, useNavigate } from "react-router-dom";
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite + React</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
-</head>
+import {
+  countryOptions,
+  genderOptions,
+  languageOptions,
+} from "../Data/ValueLabel";
+import "./Home.css";
+const Logout = () => {
+  const dispatch = useDispatch();
+  let User = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    dob: "",
+    contact: "",
+    country: "",
+    gender: "",
+    language: [],
+  };
 
-<body>
-  <!-- npm install tailwindcss @tailwindcss/vite -->
-  <div id="root"></div>
-  <!--                  
-                        // The connect is use to connects a React component to a Redux store.
-                        // Payload :  Among the key components of actions is the payload, which carries data to be processed by reducers
+  const navigate = useNavigate();
+  const [user, setUser] = useState(User);
+  const users = useSelector((state) => state.users.users);
+  console.log(users, "PATH");
+  const [filters, setFilters] = useState({});
+  const [searchItem, setSearchItem] = useState("");
+  const [edit, setEdit] = useState(null);
+  const [error, setError] = useState({});
+  const [isDark, setIsDark] = useState(false);
+  const [dark, setDark] = React.useState(false);
+  console.log(dark, "LOGIN-DARK");
 
-                        1) What is Redux?
-                        => Redux is a state management library used to store and manage the entire application's data in one place.
-                        => It does not belong to any single component's state; it is global.
-                        => Alternative to Context API for larger applications.
-                        => Stores whole application data and follows unidirectional data flow.
-                    
-                        2) Four Main Pillars:
-                        => Action, Reducer, Store, View
-                           - View: React components (buttons, images, inputs, checkboxes, etc.).
-                           - Action: Collects data from View & API, then sends to Reducer.
-                           - Reducer: Processes action data and returns new state to Store.
-                           - Store: Manages the whole application state and provides it to Views.
-                        Note: One application has only one Store.
-                        Flow: View → Action → Reducer → Store → View
-                        
-                        3) How to Install Redux:
-                        => npm create vite@latest my-app
-                        => npm install react-redux
-                        => npm install @reduxjs/toolkit
-                        => npm run dev
-                    
-                        4) What is Props?
-                        => Props are used to send data from one component to another.
-                        => Helps communicate between components.
-                        Note: With Redux, components often access data directly from the Store instead of passing via props.
-                    
-                        5) What is Action?
-                        => An object that sends data from a React component (View) or API to the Redux Store.
-                    
-                        6) What is Dispatch?
-                        => A function in Redux used to send an action to the Store so Reducers can update the state.
-                    
-                        7) What is Reducer?
-                        => A pure function that takes the current state and an action, and returns a new state.
-                        
-                        8) What is Store?
-                        => The centralized container that holds the entire application’s state.
-                        => Created using configureStore() in Redux Toolkit.
-                        => One store per application.
-                    
-                        9) What is View?
-                        => The UI layer (React components) that displays data from the Store and sends actions to Redux.
-    
-                        10) What is node-sass
-                        => It enables a developer to create code in another language and translate it into CSS
+  const darkModeHandler = () => {
+    setDark(!dark);
+    document.body.classList.toggle("dark");
+  };
+  // 👉 Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-                        11) What is uuid 
-                        => A UUID, or Universally Unique Identifier, is a 128-bit number used to uniquely identify information in computer systems.
-                        It is typically displayed as a 36-character string, divided into five sections
+  // const totalPages = Math.ceil(users.length / itemsPerPage);
+  // const startIndex = (currentPage - 1) * itemsPerPage;
+  // const currentData = users.slice(startIndex, startIndex + itemsPerPage);
 
-                        Example : 550e8400-e29b-41d4-a716-446655440000
+  const validation = () => {
+    let newError = {};
+    if (!user.firstName) {
+      newError.firstName = "First name Required !!";
+    } else if (!/^[A-Za-z]+$/.test(user.firstName)) {
+      newError.firstName = "Number are Not allowed";
+    }
+    if (!user.lastName) {
+      newError.lastName = "Last name Required !!";
+    } else if (!/^[A-Za-z]+$/.test(user.lastName)) {
+      newError.lastName = "Number are Not allowed";
+    }
+    if (!user.email) {
+      newError.email = "Email is Required !!";
+    } else if (!/^\S+@\S+\.\S+$/.test(user.email)) {
+      newError.email = "Invalid email format";
+    }
+    if (!user.dob) {
+      newError.dob = "Date of birth Required !!";
+    }
+    if (!user.contact) {
+      newError.contact = "Contact number Required !!";
+    } else if (!/^[0-9]{10}$/.test(user.contact)) {
+      newError.contact = "Contact Required 10 digits";
+    }
+    if (!user.country) {
+      newError.country = "Country is Required !!";
+    }
+    if (!user.gender) {
+      newError.gender = "Gender is Required !!";
+    }
+    if (user.language.length === 0) {
+      newError.language = "At least one language Required !!";
+    }
+    console.log(Object.keys(newError).length, "length");
+    setError(newError);
+    return Object.keys(newError).length === 0;
+  };
 
-                        12) What is combineReducers
-                        => The combineReducers helper function turns an object whose values are different "slice reducer" functions into a single
-                        combined reducer function you can pass to Redux
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, "NAME");
+    console.log(value, "value");
 
-                        Example : 
-                        export default combineReducers({
-                        todos,
-                        counter 
-                        })
+    setUser({ ...user, [name]: value });
+  };
+  const inputHandleLanguage = (e) => {
+    const { name, value, checked } = e.target;
+    // console.log(name, "NAME");
+    // console.log(value, "VALUE");
+    // console.log(checked, "CHECKED");
+    //
+    if (name === "language") {
+      const current = user.language;
+      // console.log(current, "CURRENT");
 
-                        13) What is createStore
-                        => Creates a Redux store that holds the complete state tree of your app
-                        
-                        14) What is useSelector
-                        => that allows functional React components to extract and use specific pieces of data from the Redux store
+      let updated = [];
+      if (checked) {
+        updated = [...current, value];
+        // console.log(updated, "UPDATE");
+        // console.log(...current, "....CURRENT");
+      } else {
+        updated = current.filter((lang) => lang !== value);
+      }
+      setUser({ ...user, [name]: updated });
+    }
+  };
 
-                        15) What is useDispatch
-                        => which allows functional components to dispatch actions to the Redux store.
-                        
-                        16) What is Provider 
-                        => In Redux Toolkit, the Provider is a component from the react-redux library that connects your Redux store to your React
-                           application. It makes the Redux store available to all components within its scope, typically by wrapping the root
-                           component of your application.
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validation()) return;
+    console.log(edit, "EDIT");
 
-                        NOTE : REDUX - STEP 
-                               1) crudAction.jsx  
-                               2) App.jsx
-                               3) crudReducer.jsx
-                               4) index.js
-                               5) store.js
-                               6) main.jsx
+    if (edit) {
+      dispatch(editUser({ ...user }));
+      setEdit(null);
+    } else {
+      dispatch(addUser({ ...user, id: Date.now() }));
+    }
+    setUser(User);
+  };
+  const handleLogout = (e) => {
+    e.preventDefault();
+    dispatch(logout());
+    navigate("/login");
+  };
 
-                        ) 
-                        => Redux Persist is a library used in with Redux to persist Redux store's state across page
-                        reloads or application restart.
-                        -->
-  <script type="module" src="/src/main.jsx"></script>
-</body>
+  const handleDelete = (id) => {
+    dispatch(deleteUser(id));
+  };
+  const handleEdit = (data) => {
+    setUser(data);
+    setEdit(data.id);
+    console.log(data, "DATA");
+    console.log(data.id, "data-id");
+  };
+  // 1) Apply filters first
+  const filteredList = users
+    .filter((item) => {
+      const Gender = !filters.gender || item.gender === filters.gender;
+      const Country = !filters.country || item.country === filters.country;
+      const Language =
+        !filters.language ||
+        String(item.language)
+          .toLowerCase()
+          .includes(filters.language.toLowerCase());
+      return Gender && Country && Language;
+    })
+    .filter(
+      (item) =>
+        item.firstName.toLowerCase().includes(searchItem.toLowerCase()) ||
+        item.lastName.toLowerCase().includes(searchItem.toLowerCase())
+    );
 
-</html>
+  const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentData = filteredList.slice(startIndex, startIndex + itemsPerPage);
+   // debug log: show which data is on the current page
+   console.log("Current Page:", currentPage, "Data:", currentData);
+
+  return (
+
+    <div className="bg-blue border border-gray-200 rounded-lg shadow-sm  dark:bg-black dark:border-gray-700 text-black  dark:text-white">
+
+      <nav className="relative bg-gray-800 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10 ">
+        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div className=" flex h-16 items-center justify-end">
+            <button
+              onClick={(e) => handleLogout(e)}
+              className="px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Logout
+            </button>
+            <div className="flex items-center align-center ">
+
+              <div className="p-3">
+
+                <button
+                  onClick={() => darkModeHandler()}
+                  className="text-white cursor-pointer "
+                >
+                  {dark && <IoSunny size={30} />}
+                  {!dark && <IoMoon size={30} />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <br />
+
+      <div className="flex justify-center n p-4 hover:border-gray-500 ">
+
+        <div className=" w-full max-w-sm p-4 bg-blue border border-gray-200 rounded-lg shadow-sm sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 text-black  dark:text-white">
+          <div className="text-center ">
+            <h2 className="text-3xl font-bold">Registration Form</h2>
+            <hr />
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-6 ">
+
+              <Label label="First Name" />
+
+              <Input
+                name="firstName"
+                type="text"
+                value={user.firstName}
+                onChange={handleChange}
+                placeholder="Enter First Name"
+              />
+              <Span label={error.firstName} />
+            </div>
+            <br />
+            <div className="space-y-6">
+
+              <Label label="Last Name" />
+
+              <Input
+                name="lastName"
+                type="text"
+                value={user.lastName}
+                onChange={handleChange}
+                placeholder="Enter Last Name"
+              />
+              <Span label={error.lastName} />
+            </div>
+            <br />
+            <div className="space-y-6">
+
+              <Label label="Email" />
+
+              <Input
+                name="email"
+                type="email"
+                value={user.email}
+                onChange={handleChange}
+                placeholder="Enter Email"
+              />
+              <Span label={error.email} />
+            </div>
+            <br />
+            <div className="sm:flex gap-5">
+              <div className="sm:w-[155px]">
+
+                <Label label="Date Of Birth" />
+
+                <Input
+                  name="dob"
+                  type="date"
+                  value={user.dob}
+                  onChange={handleChange}
+                />
+                <Span label={error.dob} />
+              </div>
+
+              <div className="sm:w-[180px]">
+
+                <Label label="Contact No." />
+
+                <Input
+                  name="contact"
+                  type="number"
+                  value={user.contact}
+                  onChange={handleChange}
+                  placeholder="Enter Contact "
+                />
+                <Span label={error.contact} />
+              </div>
+            </div>
+            <br />
+            <div className="flex justify-center gap-6">
+              <div className="w-[180px]">
+
+                <LabelSelect label=" Country" />
+                <Select
+                  name="country"
+                  value={user.country}
+                  onChange={handleChange}
+                  options={countryOptions}
+                />
+                <Span label={error.country} />
+              </div>
+
+              <div className="w-[180px]">
+
+                <LabelSelect label="Gender" />
+                <Select
+                  name="gender"
+                  value={user.gender}
+                  onChange={handleChange}
+                  options={genderOptions}
+                />
+                <Span label={error.gender} />
+              </div>
+            </div>
+            <br />
+            <div className=" items-center ">
+              <label className="text-sm font-medium block w-full ">
+                Select Language:
+              </label>
+
+              <InputSelectSignup
+                value="English"
+                onChange={inputHandleLanguage}
+                checked={user.language.includes("English")}
+              />
+              <span>English</span>
+
+              <InputSelectSignup
+                value="Hindi"
+                onChange={inputHandleLanguage}
+                checked={user.language.includes("Hindi")}
+              />
+              <span>Hindi</span>
+
+              <InputSelectSignup
+                value="Gujarati"
+                onChange={inputHandleLanguage}
+                checked={user.language.includes("Gujarati")}
+              />
+              <span>Gujarati</span>
+            </div>
+            <Span label={error.language} />
+            <div className="mt-3">
+              <button
+                type="submit"
+                className="w-full py-3 px-4 text-sm tracking-wider font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <br />
+      {/*FILTER SECTION  */}
+      <div className="flex justify-center">
+        <div className=" sm:flex gap-5 ">
+          <div className="text-lg m-2">
+            <Select
+              name="gender"
+              value={filters.gender}
+              onChange={(e) =>
+                setFilters({ ...filters, gender: e.target.value })
+              }
+              options={genderOptions}
+              className="w-[200px] mt-2 cursor-pointer"
+            />
+          </div>
+          <div className="text-lg m-2">
+
+            <Select
+              name="country"
+              value={filters.country}
+              onChange={(e) =>
+                setFilters({ ...filters, country: e.target.value })
+              }
+              options={countryOptions}
+              className="w-[200px] mt-2 cursor-pointer"
+            />
+          </div>
+          <div className="text-lg m-2">
+
+            <Select
+              name="language"
+              value={filters.language}
+              onChange={(e) =>
+                setFilters({ ...filters, language: e.target.value })
+              }
+              options={languageOptions}
+              className="w-[200px] mt-2 cursor-pointer"
+            />
+          </div>
+          <div className="text-lg m-2 ">
+            <input
+              className="w-[200px] border-2 border-gray-400 rounded h-10 text-center mt-2 cursor-pointer bg-white text-black "
+              type="text"
+              placeholder="Search"
+              value={searchItem}
+              onChange={(e) => setSearchItem(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+      <br />
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg text-red">
+
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr className="bg-gray-800 dark:border-gray-700 border-gray-200 text-white ">
+              <ThTable label="First name" />
+              <ThTable label="Last name" />
+              <ThTable label="Email" />
+              <ThTable label="Date Of Birth" />
+              <ThTable label="Contact" />
+              <ThTable label="Country" />
+              <ThTable label="Gender" />
+              <ThTable label="Language" />
+              <ThTable label="Action" />
+
+            </tr>
+          </thead>
+
+          <tbody>
+            {currentData.map((data) => (
+              <tr key={data.id} className="dark:text-white dark:bg-black border text-black">
+                <TdTable label={data.firstName} />
+                <TdTable label={data.lastName} />
+                <TdTable label={data.email} />
+                <TdTable label={data.dob} />
+                <TdTable label={data.contact} />
+                <TdTable label={data.country} />
+                <TdTable label={data.gender} />
+                <TdTable label={data.language.join(" , ")} />
+                <td>
+                  <Button
+                    color="-red-600"
+                    label="Delete"
+                    onClick={() => handleDelete(data.id)}
+                  />
+                  <Button
+                    color="-sky-600"
+                    label="Edit"
+                    onClick={() => handleEdit(data)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
+      <div className="flex justify-center items-center mt-4 gap-2">
+        <button
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`px-3 py-1 rounded ${currentPage === i + 1
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 text-black"
+              }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Logout;
+
+// Table
+/*
+
+<div className="overflow-x-auto shadow-md sm:rounded-lg">
+  <table className="w-full text-sm text-left text-gray-500">
+    <thead className="bg-gray-800 text-white">
+      <tr>
+        <ThTable label="First name" />
+        <ThTable label="Last name" />
+        <ThTable label="Email" />
+        <ThTable label="Date Of Birth" />
+        <ThTable label="Contact" />
+        <ThTable label="Country" />
+        <ThTable label="Gender" />
+        <ThTable label="Language" />
+        <ThTable label="Action" />
+      </tr>
+    </thead>
+    <tbody>
+      {currentData.map((data) => (
+        <tr
+          key={data.id}
+          className="dark:text-white dark:bg-black border text-black"
+        >
+          <TdTable label={data.firstName} />
+          <TdTable label={data.lastName} />
+          <TdTable label={data.email} />
+          <TdTable label={data.dob} />
+          <TdTable label={data.contact} />
+          <TdTable label={data.country} />
+          <TdTable label={data.gender} />
+          <TdTable label={data.language.join(" , ")} />
+          <td className="flex gap-2 p-2">
+            <Button
+              color="-red-600"
+              label="Delete"
+              onClick={() => handleDelete(data.id)}
+            />
+            <Button
+              color="-sky-600"
+              label="Edit"
+              onClick={() => handleEdit(data)}
+            />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+{filteredList.length > itemsPerPage && (
+  <div className="flex justify-center items-center mt-4 gap-2">
+
+    <button
+      className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+      onClick={() => {
+        setCurrentPage((prev) => {
+          const newPage = Math.max(prev - 1, 1);
+          console.log("Prev clicked → Page:", newPage);
+          return newPage;
+        });
+      }}
+      disabled={currentPage === 1}
+    >
+      Prev
+    </button>
+
+    {[...Array(totalPages)].map((_, i) => (
+      <button
+        key={i}
+        onClick={() => {
+          console.log("Page button clicked → Page:", i + 1);
+          setCurrentPage(i + 1);
+        }}
+        className={`px-3 py-1 rounded ${
+          currentPage === i + 1
+            ? "bg-blue-600 text-white"
+            : "bg-gray-200 text-black"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+      onClick={() => {
+        setCurrentPage((prev) => {
+          const newPage = Math.min(prev + 1, totalPages);
+          console.log("Next clicked → Page:", newPage);
+          return newPage;
+        });
+      }}
+      disabled={currentPage === totalPages}
+    >
+      Next
+    </button>
+  </div>
+)}
+
+*/
+
+
