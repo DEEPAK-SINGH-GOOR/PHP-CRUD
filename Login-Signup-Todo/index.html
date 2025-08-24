@@ -44,7 +44,7 @@ const Logout = () => {
   const [error, setError] = useState({});
   const [isDark, setIsDark] = useState(false);
   const [dark, setDark] = React.useState(false);
-  console.log(dark, "LOGIN-DARK");
+  // console.log(dark, "LOGIN-DARK");
 
   const darkModeHandler = () => {
     setDark(!dark);
@@ -53,6 +53,8 @@ const Logout = () => {
   // 👉 Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  console.log(currentPage, 'CURRENT-PAGE');
+  console.log(itemsPerPage, 'item-per-page');
 
   // const totalPages = Math.ceil(users.length / itemsPerPage);
   // const startIndex = (currentPage - 1) * itemsPerPage;
@@ -106,19 +108,11 @@ const Logout = () => {
   };
   const inputHandleLanguage = (e) => {
     const { name, value, checked } = e.target;
-    // console.log(name, "NAME");
-    // console.log(value, "VALUE");
-    // console.log(checked, "CHECKED");
-    //
     if (name === "language") {
       const current = user.language;
-      // console.log(current, "CURRENT");
-
       let updated = [];
       if (checked) {
         updated = [...current, value];
-        // console.log(updated, "UPDATE");
-        // console.log(...current, "....CURRENT");
       } else {
         updated = current.filter((lang) => lang !== value);
       }
@@ -173,10 +167,16 @@ const Logout = () => {
     );
 
   const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+  console.log(totalPages, 'total-page');
+
   const startIndex = (currentPage - 1) * itemsPerPage;
+  console.log(startIndex, 'start-index');
+
   const currentData = filteredList.slice(startIndex, startIndex + itemsPerPage);
-   // debug log: show which data is on the current page
-   console.log("Current Page:", currentPage, "Data:", currentData);
+  console.log(currentData, 'current-data');
+
+  // debug log: show which data is on the current page
+  console.log("Current Page:", currentPage, "Data:", currentData);
 
   return (
 
@@ -445,148 +445,60 @@ const Logout = () => {
                   />
                 </td>
               </tr>
-            ))}
-          </tbody>
+            ))}</tbody>
 
         </table>
       </div>
-      <div className="flex justify-center items-center mt-4 gap-2">
-        <button
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
+      {filteredList.length > itemsPerPage && (
+        <div className="flex justify-center items-center mt-4 gap-2">
 
-        {[...Array(totalPages)].map((_, i) => (
           <button
-            key={i}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`px-3 py-1 rounded ${currentPage === i + 1
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-black"
-              }`}
+            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+            onClick={() => {
+              setCurrentPage((prev) => {
+                const newPage = Math.max(prev - 1, 1);
+                console.log("Prev-clicked", newPage);
+                return newPage;
+              });
+            }}
+            disabled={currentPage === 1}
           >
-            {i + 1}
+            Prev
           </button>
-        ))}
 
-        <button
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                console.log("Page button clicked → Page:", i + 1);
+                setCurrentPage(i + 1);
+              }}
+              className={`px-3 py-1 rounded ${currentPage === i + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-black"
+                }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+            onClick={() => {
+              setCurrentPage((prev) => {
+                const newPage = Math.min(prev + 1, totalPages);
+                console.log("Next clicked → Page:", newPage);
+                return newPage;
+              });
+            }}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Logout;
-
-// Table
-/*
-
-<div className="overflow-x-auto shadow-md sm:rounded-lg">
-  <table className="w-full text-sm text-left text-gray-500">
-    <thead className="bg-gray-800 text-white">
-      <tr>
-        <ThTable label="First name" />
-        <ThTable label="Last name" />
-        <ThTable label="Email" />
-        <ThTable label="Date Of Birth" />
-        <ThTable label="Contact" />
-        <ThTable label="Country" />
-        <ThTable label="Gender" />
-        <ThTable label="Language" />
-        <ThTable label="Action" />
-      </tr>
-    </thead>
-    <tbody>
-      {currentData.map((data) => (
-        <tr
-          key={data.id}
-          className="dark:text-white dark:bg-black border text-black"
-        >
-          <TdTable label={data.firstName} />
-          <TdTable label={data.lastName} />
-          <TdTable label={data.email} />
-          <TdTable label={data.dob} />
-          <TdTable label={data.contact} />
-          <TdTable label={data.country} />
-          <TdTable label={data.gender} />
-          <TdTable label={data.language.join(" , ")} />
-          <td className="flex gap-2 p-2">
-            <Button
-              color="-red-600"
-              label="Delete"
-              onClick={() => handleDelete(data.id)}
-            />
-            <Button
-              color="-sky-600"
-              label="Edit"
-              onClick={() => handleEdit(data)}
-            />
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-{filteredList.length > itemsPerPage && (
-  <div className="flex justify-center items-center mt-4 gap-2">
-
-    <button
-      className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-      onClick={() => {
-        setCurrentPage((prev) => {
-          const newPage = Math.max(prev - 1, 1);
-          console.log("Prev clicked → Page:", newPage);
-          return newPage;
-        });
-      }}
-      disabled={currentPage === 1}
-    >
-      Prev
-    </button>
-
-    {[...Array(totalPages)].map((_, i) => (
-      <button
-        key={i}
-        onClick={() => {
-          console.log("Page button clicked → Page:", i + 1);
-          setCurrentPage(i + 1);
-        }}
-        className={`px-3 py-1 rounded ${
-          currentPage === i + 1
-            ? "bg-blue-600 text-white"
-            : "bg-gray-200 text-black"
-        }`}
-      >
-        {i + 1}
-      </button>
-    ))}
-
-    <button
-      className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
-      onClick={() => {
-        setCurrentPage((prev) => {
-          const newPage = Math.min(prev + 1, totalPages);
-          console.log("Next clicked → Page:", newPage);
-          return newPage;
-        });
-      }}
-      disabled={currentPage === totalPages}
-    >
-      Next
-    </button>
-  </div>
-)}
-
-*/
-
-
