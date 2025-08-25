@@ -1,48 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { IoMoon, IoSunny } from "react-icons/io5";
+<button
+  onClick={() => handleDelete(item.id)}
+  disabled={edit !== null}
+  className={`px-4 py-2 rounded ${
+    edit !== null
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-red-600 hover:bg-red-700 text-white"
+  }`}
+>
+  Delete
+</button>
 
-function App() {
-  const [dark, setDark] = useState(false);
 
-  // Check saved theme or system preference on first load
-  useEffect(() => {
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-      setDark(true);
-    } else {
-      document.documentElement.classList.remove("dark");
-      setDark(false);
-    }
-  }, []);
-
-  // Toggle handler
-  const toggleTheme = () => {
-    if (dark) {
-      document.documentElement.classList.remove("dark");
-      localStorage.theme = "light";
-      setDark(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.theme = "dark";
-      setDark(true);
-    }
-  };
-
-  return (
-    <div className="bg-yellow-100 dark:bg-blue-900 min-h-screen flex items-center justify-center">
-      <button
-        onClick={toggleTheme}
-        className="p-3 rounded-full bg-gray-200 dark:bg-gray-700 text-xl"
-      >
-        {dark ? <IoSunny /> : <IoMoon />}
-      </button>
-    </div>
-  );
-}
-
-export default App;                        
-
+<button onClick={() => handleDelete(item.id)} disabled={edit}>
+  Delete
+</button>
