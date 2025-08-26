@@ -99,3 +99,58 @@ export default function Navbar() {
     </Disclosure>
   );
 }
+
+////////////////
+<div className="grid grid-cols-2 sm:grid-cols-4 gap-5 text-center grid-item-container">
+  <div className="box-hover">
+    <a href="">
+      <div className="image">
+        <img
+          src="https://media.dash.org/wp-content/uploads/icon-medium-medium.svg"
+          alt=""
+          className="image"
+        />
+      </div>
+      <span className="text-gray-300">Medium Blog</span>
+    </a>
+  </div>
+
+  <div className="box-hover">
+    <a href="">
+      <div className="image">
+        <img
+          src="https://media.dash.org/wp-content/uploads/icon-twitter-white.svg"
+          alt=""
+          className="image"
+        />
+      </div>
+      <span className="text-gray-300">Medium Blog</span>
+    </a>
+  </div>
+
+  <div className="box-hover">
+    <a href="">
+      <div className="image">
+        <img
+          src="https://media.dash.org/wp-content/uploads/icon-reddit-white.svg"
+          alt=""
+          className="image"
+        />
+      </div>
+      <span className="text-gray-300">Medium Blog</span>
+    </a>
+  </div>
+
+  <div className="box-hover">
+    <a href="">
+      <div className="image">
+        <img
+          src="https://media.dash.org/wp-content/uploads/icon-facebook-white.svg"
+          alt=""
+          className="image"
+        />
+      </div>
+      <span className="text-gray-300">Medium Blog</span>
+    </a>
+  </div>
+</div>
