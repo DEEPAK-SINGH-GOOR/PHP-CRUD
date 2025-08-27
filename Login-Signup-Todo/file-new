@@ -53,7 +53,7 @@ const ImgData3 = ({
       </div>
     </div>
   
-    {/* ✅ TEXT SIDE */}
+    {/* TEXT SIDE */}
     <div className="flex flex-col justify-between p-4 leading-normal max-w-md mx-auto md:mx-0">
       <div>
         <h5
@@ -81,3 +81,4 @@ const ImgData3 = ({
   );
 };
 export default ImgData3;
+
