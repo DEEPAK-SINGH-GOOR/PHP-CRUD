@@ -240,3 +240,184 @@ export default function Navbar() {
   );
 }
 //////////////////////////////////////////////////
+import React from "react";
+import ImageData4 from "../../Element-5/ImgData4/ImgData4";
+
+const ImgData5 = () => {
+  const points = [
+    "Mainnet",
+    "Dash Core Desktop Wallet",
+    "DashPay Android",
+    "DashPay iOS",
+  ];
+
+  return (
+    <div>
+      <ImageData4
+        image={"https://media.dash.org/wp-content/uploads/ineligibile.svg"}
+        title={"INELIGIBLE"}
+        titleColor={"text-sky-500"}
+        paragraph={
+          "The Dash Core Group Bug Bounty on any of the in-scope products mentioned below, please let us know right away by reporting it."
+        }
+        paragraphColor={"text-black"}
+        button={"Report a Bug"}
+        className={
+          "cursor-pointer bg-sky-600 hover:border-sky-400 hover:text-sky-400 mt-5 text-white p-4 border border-1 border-white w-[210px] rounded-sm font-semibold"
+        }
+        points={points}
+        pointsColor={"text-black"}
+      />
+    </div>
+  );
+};
+
+export default ImgData5;
+//////
+import React from "react";
+
+const ImgData4 = ({
+  image,
+  title,
+  paragraph,
+  button,
+  titleColor,
+  paragraphColor,
+  bgColor,
+  pointsColor,
+  className,
+  point1,
+  point2,
+}) => {
+  const points = [
+    { name: "Mainnet" },
+    { name: "Dash Core Desktop Wallet" },
+    { name: "DashPay Android" },
+    { name: "DashPay iOS" },
+  ];
+
+  return (
+    <div
+      id="HowItWork"
+      className={`bg-white flex justify-center sm:pt-13 pb-13 sm:gap-30 flex flex-col md:flex-row ${bgColor}`}
+    >
+      {/* Left Image */}
+      <div className="pt-20">
+        <img src={image} alt="" className="h-[400px] hidden sm:block" />
+      </div>
+
+      {/* Right Content */}
+      <div className="flex flex-col justify-between p-4 leading-normal">
+        <div>
+          {/* Title */}
+          <h5
+            className={`sm:pt-20 mb-2 text-4xl font-bold tracking-tight ${titleColor}`}
+          >
+            {title}
+          </h5>
+
+          {/* Paragraph */}
+          <p className={`mb-3 w-[300px] text-md font-semibold ${paragraphColor}`}>
+            {paragraph}
+          </p>
+
+          {/* Wrap list inside <ul> to show dots */}
+          <ul className="list-disc pl-5">
+            {points.map(({ name }) => (
+              <li key={name} className={pointsColor}>
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ImgData4;
+////////////////////////////////////////
+import React from "react";
+
+const ImgData4 = ({
+  image,
+  title,
+  paragraph,
+  button,
+  titleColor,
+  paragraphColor,
+  bgColor,
+  pointsColor,
+  className,
+  point1,
+  point2,
+}) => {
+  // Static points list
+  const points = [
+    { name: "Mainnet" },
+    { name: "Dash Core Desktop Wallet" },
+    { name: "DashPay Android" },
+    { name: "DashPay iOS" },
+  ];
+
+  return (
+    <div
+      id="HowItWork"
+      className={`bg-white flex justify-center sm:pt-13 pb-13 sm:gap-30 flex flex-col md:flex-row ${bgColor}`}
+    >
+      {/* Image Section */}
+      <div className="pt-20">
+        <img src={image} alt="" className="h-[400px] hidden sm:block" />
+      </div>
+
+      {/* Text Section */}
+      <div className="flex flex-col justify-between p-4 leading-normal">
+        <div>
+          <h5
+            className={`sm:pt-20 mb-2 text-4xl font-bold tracking-tight ${titleColor}`}
+          >
+            {title}
+          </h5>
+          <p className={`mb-3 w-[300px] text-md font-semibold ${paragraphColor}`}>
+            {paragraph}
+          </p>
+
+          {/*  List with dots */}
+          <ul className="list-disc pl-5">
+            {points.map(({ name }) => (
+              <li key={name} className={pointsColor}>
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ImgData4;
+////
+import React from "react";
+import ImgData4 from "./ImgData4"; // adjust path if needed
+import dashImg from "../assets/dash.png"; // your image file
+
+const Home = () => {
+  return (
+    <div>
+      {/* Example usage of ImgData4 */}
+      <ImgData4
+        image={dashImg}
+        title="Dash Ecosystem"
+        paragraph="Explore the Dash ecosystem with its main components and wallets."
+        titleColor="text-blue-700"
+        paragraphColor="text-gray-600"
+        pointsColor="text-green-600"
+        bgColor="bg-gray-100"
+      />
+    </div>
+  );
+};
+
+export default Home;
+
