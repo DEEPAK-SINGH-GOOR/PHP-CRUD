@@ -1,60 +1,242 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const ImgData1 = ({
-  image,
-  title,
-  paragraph,
-  button,
-  titleColor,
-  paragraphColor,
-  bgColor,
-  className,
-  points = [] // array of list items
-}) => {
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
+import { Bars3Icon, XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import {
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+  Button,
+  Typography,
+} from "@material-tailwind/react";
+
+import "./Navbar.css";
+
+export default function Navbar() {
+  const [openMenu, setOpenMenu] = React.useState(false);
+  const [openMenu2, setOpenMenu2] = React.useState(false);
+  const [openMenu3, setOpenMenu3] = React.useState(false);
+  const [openMenu4, setOpenMenu4] = React.useState(false);
+  const [openMenu5, setOpenMenu5] = React.useState(false);
+
   return (
-    <div
-      id="HowItWork"
-      className={`flex justify-center sm:pt-13 pb-13 sm:gap-30 flex flex-col md:flex-row ${bgColor}`}
-    >
-      <div className="pt-20">
-        <img src={image} alt="" className="h-[400px] hidden sm:block" />
-      </div>
-      <div className="flex flex-col justify-between p-4 leading-normal">
-        <div>
-          <h5
-            className={`sm:pt-20 mb-2 text-5xl font-bold tracking-tight ${titleColor}`}
-          >
-            {title}
-          </h5>
-          <p className={`mb-3 w-[300px] text-md font-semibold ${paragraphColor}`}>
-            {paragraph}
-          </p>
+    <div>
+      <Disclosure
+        as="nav"
+        className="fixed font-semibold w-full z-50 flex justify-center rounded-xl border-black bg-white lg:rounded-sm border-none"
+      >
+        <div className="mainSection shadow-md absolute bg-white mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 rounded-xl">
+          <div className="relative flex h-16 items-center justify-between ">
+            <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+              {/* Mobile menu button*/}
+              <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-black focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+                <span className="sr-only">Open main menu</span>
+                <Bars3Icon className="block size-6 group-data-open:hidden" />
+                <XMarkIcon className="hidden size-6 group-data-open:block" />
+              </DisclosureButton>
+            </div>
 
-          <ul className="list-disc pl-5">
-            {points.map((point, index) => (
-              <li key={index}>{point}</li>
-            ))}
-          </ul>
+            {/* Logo */}
+            <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="flex shrink-0 items-center">
+                <img
+                  alt="Your Company"
+                  src="https://miro.medium.com/v2/resize:fit:1400/1*_DHG7Np0LSZUWpyrpvnyyA.png"
+                  className="h-8 w-auto"
+                />
+              </div>
 
-          <div>
-            <button className={className}>{button}</button>
+              {/* Desktop Menu */}
+              <div className="hidden sm:ml-6 sm:block w-full">
+                <div className="flex space-x-4 justify-end">
+
+                  {/* Get Started */}
+                  <Menu open={openMenu} handler={setOpenMenu} allowHover>
+                    <MenuHandler>
+                      <Button variant="text" className="text-base font-semibold">
+                        Get Started
+                      </Button>
+                    </MenuHandler>
+                    <MenuList className="bg-white w-[10rem]">
+                      <Link to="/individual">
+                        <MenuItem><Typography variant="h6">Individual</Typography></MenuItem>
+                      </Link>
+                      <a href="/business">
+                        <MenuItem><Typography variant="h6">Businesses</Typography></MenuItem>
+                      </a>
+                      <a href="/downloads">
+                        <MenuItem><Typography variant="h6">Downloads</Typography></MenuItem>
+                      </a>
+                      <a href="/buy">
+                        <MenuItem><Typography variant="h6">Buy Online</Typography></MenuItem>
+                      </a>
+                    </MenuList>
+                  </Menu>
+
+                  {/* Institution */}
+                  <Menu open={openMenu2} handler={setOpenMenu2} allowHover>
+                    <MenuHandler>
+                      <Button variant="text" className="text-base font-semibold">
+                        Institution
+                      </Button>
+                    </MenuHandler>
+                    <MenuList className="bg-white w-[10rem]">
+                      <a href="/traders"><MenuItem><Typography variant="h6">Dashboard</Typography></MenuItem></a>
+                      <a href="/team"><MenuItem><Typography variant="h6">Team</Typography></MenuItem></a>
+                      <a href="/projects"><MenuItem><Typography variant="h6">Projects</Typography></MenuItem></a>
+                      <a href="/calendar"><MenuItem><Typography variant="h6">Calendar</Typography></MenuItem></a>
+                    </MenuList>
+                  </Menu>
+
+                  {/* Developers */}
+                  <Menu open={openMenu3} handler={setOpenMenu3} allowHover>
+                    <MenuHandler>
+                      <Button variant="text" className="text-base font-semibold">
+                        Developers
+                      </Button>
+                    </MenuHandler>
+                    <MenuList className="bg-white w-[10rem]">
+                      <a href="/platform"><MenuItem><Typography variant="h6">Platform</Typography></MenuItem></a>
+                      <a href="/forum"><MenuItem><Typography variant="h6">Forum</Typography></MenuItem></a>
+                      <a href="/blog"><MenuItem><Typography variant="h6">Blog</Typography></MenuItem></a>
+                      <a href="/mining"><MenuItem><Typography variant="h6">Mining</Typography></MenuItem></a>
+                    </MenuList>
+                  </Menu>
+
+                  {/* Community */}
+                  <Menu open={openMenu4} handler={setOpenMenu4} allowHover>
+                    <MenuHandler>
+                      <Button variant="text" className="text-base font-semibold">
+                        Community
+                      </Button>
+                    </MenuHandler>
+                    <MenuList className="bg-white w-[10rem]">
+                      <a href="/BugBounty"><MenuItem><Typography variant="h6">Bug Bounty Program</Typography></MenuItem></a>
+                      <a href="/docs"><MenuItem><Typography variant="h6">Document</Typography></MenuItem></a>
+                      <a href="/contribute"><MenuItem><Typography variant="h6">Contributing</Typography></MenuItem></a>
+                      <a href="/roadmap"><MenuItem><Typography variant="h6">Roadmap</Typography></MenuItem></a>
+                    </MenuList>
+                  </Menu>
+
+                  {/* Language */}
+                  <Menu open={openMenu5} handler={setOpenMenu5} allowHover>
+                    <MenuHandler>
+                      <Button variant="text" className="text-base font-semibold">
+                        English
+                      </Button>
+                    </MenuHandler>
+                    <MenuList className="bg-white w-[10rem]">
+                      <a href="/"><MenuItem><Typography variant="h6">English</Typography></MenuItem></a>
+                      <a href="/"><MenuItem><Typography variant="h6">Hindi</Typography></MenuItem></a>
+                      <a href="/"><MenuItem><Typography variant="h6">Deutsch</Typography></MenuItem></a>
+                      <a href="/"><MenuItem><Typography variant="h6">Ελληνικά</Typography></MenuItem></a>
+                    </MenuList>
+                  </Menu>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Mobile Menu */}
+        <DisclosurePanel className="sm:hidden mainSection absolute bg-white pt-10 border-none">
+          <div className="space-y-1 px-2 pt-2 pb-3">
+
+            {/* Get Started */}
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <DisclosureButton className="flex w-full justify-between px-3 py-2 text-base font-medium text-black hover:bg-gray-100">
+                    Get Started <ChevronDownIcon className={`${open ? "rotate-180" : ""} h-5 w-5`} />
+                  </DisclosureButton>
+                  <DisclosurePanel className="pl-5">
+                    <a href="/individual" className="block px-3 py-2 text-sm">Individual</a>
+                    <a href="/business" className="block px-3 py-2 text-sm">Businesses</a>
+                    <a href="/downloads" className="block px-3 py-2 text-sm">Downloads</a>
+                    <a href="/buy" className="block px-3 py-2 text-sm">Buy Online</a>
+                  </DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
+
+            {/* Institution */}
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <DisclosureButton className="flex w-full justify-between px-3 py-2 text-base font-medium text-black hover:bg-gray-100">
+                    Institution <ChevronDownIcon className={`${open ? "rotate-180" : ""} h-5 w-5`} />
+                  </DisclosureButton>
+                  <DisclosurePanel className="pl-5">
+                    <a href="/traders" className="block px-3 py-2 text-sm">Dashboard</a>
+                    <a href="/team" className="block px-3 py-2 text-sm">Team</a>
+                    <a href="/projects" className="block px-3 py-2 text-sm">Projects</a>
+                    <a href="/calendar" className="block px-3 py-2 text-sm">Calendar</a>
+                  </DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
+
+            {/* Developers */}
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <DisclosureButton className="flex w-full justify-between px-3 py-2 text-base font-medium text-black hover:bg-gray-100">
+                    Developers <ChevronDownIcon className={`${open ? "rotate-180" : ""} h-5 w-5`} />
+                  </DisclosureButton>
+                  <DisclosurePanel className="pl-5">
+                    <a href="/platform" className="block px-3 py-2 text-sm">Platform</a>
+                    <a href="/forum" className="block px-3 py-2 text-sm">Forum</a>
+                    <a href="/blog" className="block px-3 py-2 text-sm">Blog</a>
+                    <a href="/mining" className="block px-3 py-2 text-sm">Mining</a>
+                  </DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
+
+            {/* Community */}
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <DisclosureButton className="flex w-full justify-between px-3 py-2 text-base font-medium text-black hover:bg-gray-100">
+                    Community <ChevronDownIcon className={`${open ? "rotate-180" : ""} h-5 w-5`} />
+                  </DisclosureButton>
+                  <DisclosurePanel className="pl-5">
+                    <a href="/BugBounty" className="block px-3 py-2 text-sm">Bug Bounty Program</a>
+                    <a href="/docs" className="block px-3 py-2 text-sm">Document</a>
+                    <a href="/contribute" className="block px-3 py-2 text-sm">Contributing</a>
+                    <a href="/roadmap" className="block px-3 py-2 text-sm">Roadmap</a>
+                  </DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
+
+            {/* Language */}
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <DisclosureButton className="flex w-full justify-between px-3 py-2 text-base font-medium text-black hover:bg-gray-100">
+                    Language <ChevronDownIcon className={`${open ? "rotate-180" : ""} h-5 w-5`} />
+                  </DisclosureButton>
+                  <DisclosurePanel className="pl-5">
+                    <a href="/" className="block px-3 py-2 text-sm">English</a>
+                    <a href="/" className="block px-3 py-2 text-sm">Hindi</a>
+                    <a href="/" className="block px-3 py-2 text-sm">Deutsch</a>
+                    <a href="/" className="block px-3 py-2 text-sm">Ελληνικά</a>
+                  </DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
+          </div>
+        </DisclosurePanel>
+      </Disclosure>
     </div>
   );
-};
-
-export default ImgData1;
-//
-<ImgData1
-  image="https://media.dash.org/wp-content/uploads/bugbounty.svg"
-  title="Bug Bounty"
-  paragraph="Find and report bugs"
-  button="Click"
-  titleColor="text-black"
-  paragraphColor="text-gray-600"
-  bgColor="bg-white"
-  className="text-center text-sky-500 pt-10"
-  points={["point1", "point2", "point3", "point4", "point5"]}
-/>
+}
+//////////////////////////////////////////////////
