@@ -1,36 +1,34 @@
-import React from "react";
-
-const ImageData4 = ({
-  image,
-  title,
-  titleColor,
-  paragraph,
-  paragraphColor,
-  button,
-  className,
-  points,
-  pointsColor,
-}) => {
+.mainSection {
+    margin: 10px;   
+    width: 100%;
+  }
+  import Page2 from "./Main/Page2/Page2";
+import Page3 from "./Main/Page3/Page3";
+import Page4 from "./Main/Page4/Page4";
+import Main from "./Main/Page1/Page1";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import Page5 from "./Main/Page5/Page5";
+import PageNotFound from "./Main/PageNotFound/PageNotFound";
+import Navbar from "./Components/Page1-All-Components/Navbar/Navbar";
+function App() {
   return (
-    <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md">
-      <img src={image} alt={title} className="w-20 h-20 mb-4" />
-      
-      <h2 className={`text-xl font-bold mb-2 ${titleColor}`}>{title}</h2>
-      
-      <p className={`mb-4 ${paragraphColor}`}>{paragraph}</p>
-
-      <ul className="mb-4 list-disc text-left pl-5">
-        {points &&
-          points.map((point, index) => (
-            <li key={index} className={`${pointsColor}`}>
-              {point}
-            </li>
-          ))}
-      </ul>
-
-      <button className={className}>{button}</button>
+    // <div>
+    //   <Main />
+    // </div>
+    <div>
+      {/* <Dark/> */}
+      <BrowserRouter>
+      <Navbar/>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/individual" element={<Page2 />} />
+          <Route path="/traders" element={<Page3 />} />
+          <Route path="/platforms" element={<Page4 />} />
+          <Route path="/BugBounty" element={<Page5 />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
-};
-
-export default ImageData4;
+}
+export default App;
