@@ -1,34 +1,31 @@
-.mainSection {
-    margin: 10px;   
-    width: 100%;
-  }
-  import Page2 from "./Main/Page2/Page2";
-import Page3 from "./Main/Page3/Page3";
-import Page4 from "./Main/Page4/Page4";
-import Main from "./Main/Page1/Page1";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import Page5 from "./Main/Page5/Page5";
-import PageNotFound from "./Main/PageNotFound/PageNotFound";
-import Navbar from "./Components/Page1-All-Components/Navbar/Navbar";
-function App() {
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const PageNotFound = () => {
+  const navigate = useNavigate();
+
   return (
-    // <div>
-    //   <Main />
-    // </div>
     <div>
-      {/* <Dark/> */}
-      <BrowserRouter>
-      <Navbar/>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/individual" element={<Page2 />} />
-          <Route path="/traders" element={<Page3 />} />
-          <Route path="/platforms" element={<Page4 />} />
-          <Route path="/BugBounty" element={<Page5 />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <div className="flex justify-center pt-10">
+        <img
+          src="https://www.cloudns.net/blog/wp-content/uploads/2023/10/Error-404-Page-Not-Found.png"
+          alt="404"
+        />
+      </div>
+      <div className="flex justify-center">
+        <button
+          type="button"
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 
+          focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 
+          me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 
+          focus:outline-none dark:focus:ring-blue-800"
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </button>
+      </div>
     </div>
   );
-}
-export default App;
+};
+
+export default PageNotFound;
